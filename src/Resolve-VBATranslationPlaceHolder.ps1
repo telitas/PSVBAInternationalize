@@ -13,9 +13,13 @@ function Resolve-VBATranslationPlaceHolder
         [System.Text.Encoding]$SourceEncoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false)),
         [Parameter(Mandatory=$true)][string]$TranslationPath,
         [Parameter(Mandatory=$true)][string]$DestinationPath,
-        [System.Text.Encoding]$DestinationEncoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false))
+        [System.Text.Encoding]$DestinationEncoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false)),
+        [switch]$Force
     )
-
+    if(-not $Force -and (Test-Path -Path $DestinationPath))
+    {
+        Write-Error "Destination file `"$DestinationPath` is already exists." -ErrorAction Stop
+    }
     function WrappedOutFile{
         Param(
             [Parameter(ValueFromPipeline)][string]$InputObject = "",

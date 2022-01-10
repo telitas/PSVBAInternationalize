@@ -11,8 +11,13 @@ function Export-VBATranslationPlaceHolder
     Param (
         [Parameter(Mandatory=$true)][string]$SourcePath,
         [System.Text.Encoding]$SourceEncoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false)),
-        [Parameter(Mandatory=$true)][string]$DestinationPath
+        [Parameter(Mandatory=$true)][string]$DestinationPath,
+        [switch]$Force
     )
+    if(-not $Force -and (Test-Path -Path $DestinationPath))
+    {
+        Write-Error "Destination file `"$DestinationPath` is already exists." -ErrorAction Stop
+    }
     function WrappedGetContent{
         Param(
             [string]$Path,

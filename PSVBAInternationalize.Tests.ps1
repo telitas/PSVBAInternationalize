@@ -300,8 +300,36 @@ End Sub
                 Remove-Item $inputFile -Force
                 Remove-Item $outputFile -Force
             }
+            It 'File already exists with force' {
+                $inputFile = Join-Path -Path $WorkDirectory -ChildPath "in.bas"
+                $outputFile = Join-Path -Path $WorkDirectory -ChildPath "out.xml"
+                $encoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false))
+
+                @"
+"@ | WrappedOutFile -Path $inputFile -Encoding $encoding -NoNewline
+@"
+"@ | WrappedOutFile -Path $outputFile -Encoding $encoding -NoNewline
+                Export-VBATranslationPlaceHolder -SourcePath $inputfile -SourceEncoding $encoding -DestinationPath $outputFile -Force
+
+                Remove-Item $inputFile -Force
+                Remove-Item $outputFile -Force
+            }
         }
         Context 'Exception' {
+            It 'File already exists without force' {
+                $inputFile = Join-Path -Path $WorkDirectory -ChildPath "in.bas"
+                $outputFile = Join-Path -Path $WorkDirectory -ChildPath "out.xml"
+                $encoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false))
+
+                @"
+"@ | WrappedOutFile -Path $inputFile -Encoding $encoding -NoNewline
+                @"
+"@ | WrappedOutFile -Path $outputFile -Encoding $encoding -NoNewline
+                {Export-VBATranslationPlaceHolder -SourcePath $inputfile -SourceEncoding $encoding -DestinationPath $outputFile} | Should -Throw
+
+                Remove-Item $inputFile -Force
+                Remove-Item $outputFile -Force
+            }
         }
     }
     Context 'Resolve-VBATranslationPlaceHolder' {
@@ -843,6 +871,28 @@ End Sub
                 Remove-Item $translationFile -Force
                 Remove-Item $outputFile -Force
             }
+            It 'File already exists with force' {
+                $inputFile = Join-Path -Path $WorkDirectory -ChildPath "in.bas"
+                $translationFile = Join-Path -Path $WorkDirectory -ChildPath "out.xml"
+                $outputFile = Join-Path -Path $WorkDirectory -ChildPath "out.bas"
+                $encoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false))
+
+                @"
+"@ | WrappedOutFile -Path $inputFile -Encoding $encoding -NoNewline
+                @"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<translations>
+</translations>
+"@ | WrappedOutFile -Path $translationFile -Encoding $encoding -NoNewline
+                @"
+"@ | WrappedOutFile -Path $outputFile -Encoding $encoding -NoNewline
+
+                Resolve-VBATranslationPlaceHolder -SourcePath $inputfile -SourceEncoding $encoding -TranslationPath $translationFile -DestinationPath $outputFile -DestinationEncoding $encoding -Force
+
+                Remove-Item $inputFile -Force
+                Remove-Item $translationFile -Force
+                Remove-Item $outputFile -Force
+            }
         }
         Context 'Exception' {
             It 'Invalid translation format' {
@@ -888,6 +938,27 @@ End Sub
                 {
                     Remove-Item $outputFile -Force
                 }
+            }
+            It 'File already exists without force' {
+                $inputFile = Join-Path -Path $WorkDirectory -ChildPath "in.bas"
+                $translationFile = Join-Path -Path $WorkDirectory -ChildPath "out.xml"
+                $outputFile = Join-Path -Path $WorkDirectory -ChildPath "out.bas"
+                $encoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false))
+
+                @"
+"@ | WrappedOutFile -Path $inputFile -Encoding $encoding -NoNewline
+                @"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+</translations>
+"@ | WrappedOutFile -Path $translationFile -Encoding $encoding -NoNewline
+                @"
+"@ | WrappedOutFile -Path $outputFile -Encoding $encoding -NoNewline
+
+                {Resolve-VBATranslationPlaceHolder -SourcePath $inputfile -SourceEncoding $encoding -TranslationPath $translationFile -DestinationPath $outputFile -DestinationEncoding $encoding} | Should -Throw
+
+                Remove-Item $inputFile -Force
+                Remove-Item $translationFile -Force
+                Remove-Item $outputFile -Force
             }
         }
     }
