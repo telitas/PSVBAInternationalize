@@ -300,6 +300,32 @@ End Sub
                 Remove-Item $inputFile -Force
                 Remove-Item $outputFile -Force
             }
+            It 'duplicate placeholder' {
+                $inputFile = Join-Path -Path $WorkDirectory -ChildPath "in.bas"
+                $outputFile = Join-Path -Path $WorkDirectory -ChildPath "out.xml"
+                $encoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false))
+
+                @"
+Attribute VB_Description = "_(DuplicatePlaceHolder)"
+Public DummyField As String
+Attribute DummyField.VB_VarDescription = "_(DuplicatePlaceHolder)"
+Public Sub DummyMethod()
+Attribute DummyMethod.VB_Description = "_(DuplicatePlaceHolder)"
+    Debug.Print "_(DuplicatePlaceHolder)"
+    Debug.Print "_(DuplicatePlaceHolder)" & "_(DuplicatePlaceHolder)"
+    Debug.Print "_(DuplicatePlaceHolder)": Debug.Print "_(DuplicatePlaceHolder)"
+End Sub
+"@ | WrappedOutFile -Path $inputFile -Encoding $encoding -NoNewline
+                Export-VBATranslationPlaceHolder -SourcePath $inputfile -SourceEncoding $encoding -DestinationPath $outputFile
+                WrappedGetContent -Path $outputFile -Raw | Should -Be @"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<translations>
+<translation id="DuplicatePlaceHolder"></translation>
+</translations>
+"@
+                Remove-Item $inputFile -Force
+                Remove-Item $outputFile -Force
+            }
             It 'File already exists with force' {
                 $inputFile = Join-Path -Path $WorkDirectory -ChildPath "in.bas"
                 $outputFile = Join-Path -Path $WorkDirectory -ChildPath "out.xml"

@@ -72,7 +72,7 @@ function Export-VBATranslationPlaceHolder
 
     [string[]]$placeHolders = @()
     WrappedGetContent -Path $SourcePath -Encoding $SourceEncoding | ForEach-Object -Process {
-        $placeHolders += $PlaceHolderPattern.Matches($_) | ForEach-Object -Process {if($placeHolders -cnotcontains $_){$_.Groups["id"].Value}}
+        $placeHolders += $PlaceHolderPattern.Matches($_) | ForEach-Object -Process {$holder=$_.Groups["id"].Value;if($placeHolders -cnotcontains $holder){$holder}}
     }
     $document = New-Object -TypeName System.Xml.Linq.XDocument -ArgumentList @(
         (New-Object -TypeName System.Xml.Linq.XDeclaration -ArgumentList @("1.0", "utf-8", "yes")),
