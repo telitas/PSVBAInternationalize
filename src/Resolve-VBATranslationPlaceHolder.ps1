@@ -132,6 +132,11 @@ function Resolve-VBATranslationPlaceHolder
             $Translation[$_.id] = $trans
         }
     }
+    $destinationParent = Split-Path -Path $DestinationPath -Parent
+    if(-not (Test-Path -Path $destinationParent))
+    {
+        New-Item -ItemType Directory -Path $destinationParent | Out-Null
+    }
     (
         WrappedGetContent -Path $SourcePath -Encoding $SourceEncoding | ForEach-Object -Process {
             $content = $_

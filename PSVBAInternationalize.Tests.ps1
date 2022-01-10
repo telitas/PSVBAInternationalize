@@ -314,6 +314,21 @@ End Sub
                 Remove-Item $inputFile -Force
                 Remove-Item $outputFile -Force
             }
+            It 'Create a parent directory if it does not exists.' {
+                $inputFile = Join-Path -Path $WorkDirectory -ChildPath "in.bas"
+                $outputFile = Join-Path -Path $WorkDirectory -ChildPath "out\out.xml"
+                $outputParent = Split-Path -Path $outputFile -Parent
+                $encoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false))
+
+                @"
+"@ | WrappedOutFile -Path $inputFile -Encoding $encoding -NoNewline
+                Export-VBATranslationPlaceHolder -SourcePath $inputfile -SourceEncoding $encoding -DestinationPath $outputFile
+                Test-Path -Path $outputParent | Should -BeTrue
+
+                Remove-Item $inputFile -Force
+                Remove-Item $outputFile -Force
+                Remove-Item $outputParent -Force
+            }
         }
         Context 'Exception' {
             It 'File already exists without force' {
@@ -892,6 +907,28 @@ End Sub
                 Remove-Item $inputFile -Force
                 Remove-Item $translationFile -Force
                 Remove-Item $outputFile -Force
+            }
+            It 'Create a parent directory if it does not exist.' {
+                $inputFile = Join-Path -Path $WorkDirectory -ChildPath "in.bas"
+                $translationFile = Join-Path -Path $WorkDirectory -ChildPath "out.xml"
+                $outputFile = Join-Path -Path $WorkDirectory -ChildPath "out\out.bas"
+                $outputParent = Split-Path -Path $outputFile -Parent
+                $encoding = (New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false))
+
+                @"
+"@ | WrappedOutFile -Path $inputFile -Encoding $encoding -NoNewline
+                @"
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<translations>
+</translations>
+"@ | WrappedOutFile -Path $translationFile -Encoding $encoding -NoNewline
+                Resolve-VBATranslationPlaceHolder -SourcePath $inputfile -SourceEncoding $encoding -TranslationPath $translationFile -DestinationPath $outputFile -DestinationEncoding $encoding
+                Test-Path -Path $outputParent | Should -BeTrue
+
+                Remove-Item $inputFile -Force
+                Remove-Item $translationFile -Force
+                Remove-Item $outputFile -Force
+                Remove-Item $outputParent -Force
             }
         }
         Context 'Exception' {

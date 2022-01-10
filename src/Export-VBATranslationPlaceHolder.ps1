@@ -82,6 +82,11 @@ function Export-VBATranslationPlaceHolder
         ))
     )
 
+    $destinationParent = Split-Path -Path $DestinationPath -Parent
+    if(-not (Test-Path -Path $destinationParent))
+    {
+        New-Item -ItemType Directory -Path $destinationParent | Out-Null
+    }
     [System.Xml.XmlWriterSettings]$setting = New-Object -TypeName System.Xml.XmlWriterSettings
     $setting.Encoding =  New-Object -TypeName System.Text.UTF8Encoding -ArgumentList @($false)
     $setting.Indent = $true
