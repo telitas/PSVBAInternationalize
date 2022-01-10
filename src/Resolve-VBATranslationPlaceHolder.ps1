@@ -140,7 +140,7 @@ function Resolve-VBATranslationPlaceHolder
     (
         WrappedGetContent -Path $SourcePath -Encoding $SourceEncoding | ForEach-Object -Process {
             $content = $_
-            if($content -match $DescriptionPlaceHolderPattern)
+            if($content -cmatch $DescriptionPlaceHolderPattern)
             {
                 $id=$Matches['id']
                 if($Translation.Keys -notcontains $id)
