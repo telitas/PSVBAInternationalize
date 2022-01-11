@@ -113,6 +113,10 @@ function Resolve-VBATranslationPlaceHolder
     ([xml](WrappedGetContent -Path $TranslationPath)).translations.translation | ForEach-Object -Process {
         if($null -ne $_){
             $trans = $_."#text"
+            if($null -eq $trans)
+            {
+                $trans = ""
+            }
             if($trans.StartsWith("`r`n"))
             {
                 $trans = $trans.SubString(2)
