@@ -67,6 +67,11 @@ Attribute HelloWorld.VB_Description = "This is hello, world subroutine."
 End Sub
 ```
 
+## NOTE
+
+This module imprementation is very lazy because I wish VBA would be replaced
+to other languages in the near future.
+
 ## License
 
 MIT
