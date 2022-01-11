@@ -78,4 +78,4 @@ MIT
 
 Copyright (c) 2022 telitas
 
-See the LICENSE file or https://opensource.org/licenses/mit-license.php for details.
+See the LICENSE.txt file or https://opensource.org/licenses/mit-license.php for details.
