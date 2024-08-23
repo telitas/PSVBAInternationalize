@@ -69,7 +69,7 @@ End Sub
 
 ## NOTE
 
-This module imprementation is very lazy because I wish VBA would be replaced
+This module imprementation is very lazy because I hope VBA would be replaced
 to other languages in the near future.
 
 ## License

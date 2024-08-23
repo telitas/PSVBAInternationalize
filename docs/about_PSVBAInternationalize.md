@@ -13,7 +13,7 @@ The following functions are privided in this version.
 - Resolve translation to each placeholder.
 
 # NOTE
-This module imprementation is very lazy because I wish VBA would be replaced to other languages in the near future.
+This module imprementation is very lazy because I hope VBA would be replaced to other languages in the near future.
 
 # LICENSE
 MIT
